@@ -5,6 +5,17 @@
 #define LED2_bm (1<<18)
 #define LED3_bm (1<<19)
 #define BTN0_bm (1<<4)
+#define BTN1_bm (1<<6)
+#define BTN2_bm (1<<5)
+#define BTN3_bm (1<<7)
+
+
+//----------GLOBAL_VARS--------
+
+enum KeyboardState {BUTTON_0, BUTTON_1, BUTTON_2, BUTTON_3, RELEASED};
+
+
+//----------DELAY------------------------
 
 void delay(){
 	int i = 0;
@@ -19,48 +30,99 @@ void delay_ms(int iTime){
 	for (iCount = 0; iCount < iTime; iCount++){}
 }
 
+//----------LED------------------------
+
 void LedInit(){
-	IO1DIR |= LED0_bm;
-	IO1DIR |= LED1_bm;
-	IO1DIR |= LED2_bm;
-	IO1DIR |= LED3_bm;
+	IO1DIR |= LED0_bm | LED1_bm | LED2_bm | LED3_bm;
 	
 	IO1SET |= LED0_bm;
 	
 }
 
 void LedOn(unsigned char ucLedIndeks){
-	if (ucLedIndeks >= 0 && ucLedIndeks <= 7){
-		IO1CLR = 0xffffffff;
+	//przerobic na swich
+	
+	IO1CLR = 0x00FF0000;
+	
+	switch (ucLedIndeks) {
+	
+		case 0:
+			IO1SET = 1 << 16;
+			break;
+		case 1:
+			IO1SET = 1 << 17;
+			break;
+		case 2:
+			IO1SET = 1 << 18;
+			break;
+		case 3:
+			IO1SET = 1 << 19;
+			break;
+		case 4:
+			IO1SET = 1 << 20;
+			break;
+		case 5:
+			IO1SET = 1 << 21;
+			break;
+		case 6:
+			IO1SET = 1 << 22;
+			break;
+		case 7:
+			IO1SET = 1 << 23;
+			break;
 		
-		IO1SET = 1 << (ucLedIndeks + 16);
+		
 	}
 }
 
 
-unsigned char ucReadButton1(){
-	int test;
-	test = IO0PIN & (1<<4);
-	if ((IO0PIN & BTN0_bm) > 0){
-		return 1;
+//----------BUTTON------------------------
+
+
+void KeyboardInit(){
+	IO0DIR = IO0DIR | 0x000000F0;
+}
+
+
+enum KeyboardState eKeyboardRead(){
+	if ((IO0PIN & BTN0_bm) == 0){
+		return BUTTON_0;
 	}
-	else{
-		return 0;
+	
+	if ((IO0PIN & BTN1_bm) == 0){
+		return BUTTON_1;
 	}
+	
+	if ((IO0PIN & BTN2_bm) == 0){
+		return BUTTON_2;
+	}
+	
+	if ((IO0PIN & BTN3_bm) == 0){
+		return BUTTON_3;
+	}
+	
+	return RELEASED;
 }
 
 int main(){
 	LedInit();
-	
+	KeyboardInit();
 	
 	while(1){
-		if (ucReadButton1() == 1){
-			LedOn(1);
+		
+		switch (eKeyboardRead()){
+			case RELEASED:
+				LedOn(4);
+				break;
+			case RELEASED:
+				LedOn(0);
+			break;
 		}
-		else{
-		LedOn(0);
-		}
+		delay_ms(250);
+		
 	}
+		
+	
 	
 }
 
