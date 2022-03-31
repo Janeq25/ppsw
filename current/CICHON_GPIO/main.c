@@ -14,6 +14,8 @@
 
 enum KeyboardState {BUTTON_0, BUTTON_1, BUTTON_2, BUTTON_3, RELEASED};
 
+enum Direction {LEFT, RIGHT};
+
 
 //----------DELAY------------------------
 
@@ -76,11 +78,39 @@ void LedOn(unsigned char ucLedIndeks){
 }
 
 
+
+void LedStep(enum Direction eDirection){
+	
+	static unsigned int uiLedStepCounter;
+	
+	switch (eDirection){
+		
+		case LEFT:
+			uiLedStepCounter = (uiLedStepCounter += 1) % 4;
+			LedOn(uiLedStepCounter);
+			break;
+		
+		case RIGHT:
+			uiLedStepCounter = (uiLedStepCounter -= 1) % 4;
+			LedOn(uiLedStepCounter);
+			break;	
+	}
+}
+
+void LedStepLeft(void){
+	LedStep(LEFT);
+}
+
+void LedStepRight(void){
+	LedStep(RIGHT);
+}
+
+
 //----------BUTTON------------------------
 
 
 void KeyboardInit(){
-	IO0DIR = IO0DIR | 0x000000F0;
+	IO0DIR = IO0DIR & 0xFFFFFF0F;
 }
 
 
@@ -111,18 +141,17 @@ int main(){
 	while(1){
 		
 		switch (eKeyboardRead()){
-			case RELEASED:
-				LedOn(4);
+			
+			case BUTTON_1:
+				LedStepRight();
 				break;
-			case RELEASED:
-				LedOn(0);
-			break;
+			
+			case BUTTON_2:
+				LedStepLeft();
+				break;
 		}
+		
 		delay_ms(250);
-		
 	}
-		
-	
-	
 }
 
