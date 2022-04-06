@@ -4,6 +4,7 @@
 #define LED1_bm (1<<17)
 #define LED2_bm (1<<18)
 #define LED3_bm (1<<19)
+
 #define BTN0_bm (1<<4)
 #define BTN1_bm (1<<6)
 #define BTN2_bm (1<<5)
@@ -42,39 +43,26 @@ void LedInit(){
 }
 
 void LedOn(unsigned char ucLedIndeks){
-	//przerobic na swich
 	
-	IO1CLR = 0x00FF0000;
+	IO1CLR = LED0_bm | LED1_bm | LED2_bm | LED3_bm;
 	
 	switch (ucLedIndeks) {
 	
 		case 0:
-			IO1SET = 1 << 16;
+			IO1SET = LED0_bm;
 			break;
 		case 1:
-			IO1SET = 1 << 17;
+			IO1SET = LED1_bm;
 			break;
 		case 2:
-			IO1SET = 1 << 18;
+			IO1SET = LED2_bm;
 			break;
 		case 3:
-			IO1SET = 1 << 19;
+			IO1SET = LED3_bm;
 			break;
-		case 4:
-			IO1SET = 1 << 20;
+		default:
 			break;
-		case 5:
-			IO1SET = 1 << 21;
-			break;
-		case 6:
-			IO1SET = 1 << 22;
-			break;
-		case 7:
-			IO1SET = 1 << 23;
-			break;
-		
-		
-	}
+		}
 }
 
 
@@ -86,15 +74,14 @@ void LedStep(enum Direction eDirection){
 	switch (eDirection){
 		
 		case LEFT:
-			uiLedStepCounter = (uiLedStepCounter += 1) % 4;
-			LedOn(uiLedStepCounter);
+			uiLedStepCounter += 1;
 			break;
 		
 		case RIGHT:
-			uiLedStepCounter = (uiLedStepCounter -= 1) % 4;
-			LedOn(uiLedStepCounter);
+			uiLedStepCounter -= 1;
 			break;	
 	}
+	LedOn(uiLedStepCounter % 4);
 }
 
 void LedStepLeft(void){
@@ -110,7 +97,7 @@ void LedStepRight(void){
 
 
 void KeyboardInit(){
-	IO0DIR = IO0DIR & 0xFFFFFF0F;
+	IO0DIR = IO0DIR & ~(BTN0_bm | BTN1_bm | BTN2_bm | BTN3_bm);
 }
 
 
@@ -119,12 +106,13 @@ enum KeyboardState eKeyboardRead(){
 		return BUTTON_0;
 	}
 	
-	if ((IO0PIN & BTN1_bm) == 0){
+	if ((IO0PIN & BTN1_bm) == 0){ // wcisniety 0x00000000 puszczony 0x00000040
 		return BUTTON_1;
 	}
 	
-	if ((IO0PIN & BTN2_bm) == 0){
+	if ((IO0PIN & BTN2_bm) == 0){ // wcisniety 0x00000000 puszczony 0x00000020
 		return BUTTON_2;
+		
 	}
 	
 	if ((IO0PIN & BTN3_bm) == 0){
@@ -149,6 +137,9 @@ int main(){
 			case BUTTON_2:
 				LedStepLeft();
 				break;
+			
+			default:
+			break;
 		}
 		
 		delay_ms(250);
