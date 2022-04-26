@@ -1,8 +1,10 @@
 #include "led.h"
 
 
-enum LedState {STATE0, STATE1, STATE2, STATE3, STATE4, STATE5};
-enum LedState eLedState = STATE0;
+enum LedDirection {LEFT, RIGHT};
+enum LedDirection eLedDirection = LEFT;
+
+char cLedCounter = 0;
 
 void delay_ms(int iTime){
 	int iCount;
@@ -16,36 +18,30 @@ int main(){
 	LedInit();
 	
 	while(1){
-		switch (eLedState){
+		switch (eLedDirection){
 		
-			case STATE0:
+			case LEFT:
 			LedStepLeft();
-			eLedState = STATE1;
+			cLedCounter++;
+			if (cLedCounter > 2){
+				eLedDirection = RIGHT;
+				cLedCounter = 0;
+			}
+			else {
+				eLedDirection = LEFT;
+			}
 			break;
 			
-			case STATE1:
-			LedStepLeft();
-			eLedState = STATE2;
-			break;
-			
-			case STATE2:
-			LedStepLeft();
-			eLedState = STATE3;
-			break;
-			
-			case STATE3:
+			case RIGHT:
 			LedStepRight();
-			eLedState = STATE4;
-			break;
-			
-			case STATE4:
-			LedStepRight();
-			eLedState = STATE5;
-			break;
-			
-			case STATE5:
-			LedStepRight();
-			eLedState = STATE0;
+			cLedCounter++;
+			if (cLedCounter > 2){
+				eLedDirection = LEFT;
+				cLedCounter = 0;
+			}
+			else {
+				eLedDirection = RIGHT;
+			}
 			break;
 		
 		}
