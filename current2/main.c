@@ -1,10 +1,9 @@
 #include "led.h"
 #include "keyboard.h"
 
-enum CurrentState {MOVE, STAY};
-enum CurrentState eCurrentState = MOVE;
+enum CurrentState {LEFT, RIGHT, STAY};
+enum CurrentState eCurrentState = STAY;
 
-char cLedCounter = 0;
 
 void delay_ms(int iTime){
 	int iCount;
@@ -21,21 +20,32 @@ int main(){
 	while(1){
 		switch (eCurrentState){
 		
-			case MOVE:
-			LedStepRight();
-			cLedCounter++;
-			if (cLedCounter > 2){
+			case LEFT:
+			LedStepLeft();
+			if (eKeyboardRead() == BUTTON_1){
 				eCurrentState = STAY;
-				cLedCounter = 0;
 			}
 			else {
-				eCurrentState = MOVE;
+				eCurrentState = LEFT;
+			}
+			break;
+			
+			case RIGHT:
+			LedStepRight();
+			if (eKeyboardRead() == BUTTON_1){
+				eCurrentState = STAY;
+			}
+			else {
+				eCurrentState = RIGHT;
 			}
 			break;
 			
 			case STAY:
 			if (eKeyboardRead() == BUTTON_0){
-				eCurrentState = MOVE;
+				eCurrentState = LEFT;
+			}
+			else if (eKeyboardRead() == BUTTON_2){
+				eCurrentState = RIGHT;
 			}
 			else {
 				eCurrentState = STAY;
