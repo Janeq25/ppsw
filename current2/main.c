@@ -1,8 +1,8 @@
 #include "led.h"
+#include "keyboard.h"
 
-
-enum LedDirection {LEFT, RIGHT};
-enum LedDirection eLedDirection = LEFT;
+enum CurrentState {MOVE, STAY};
+enum CurrentState eCurrentState = MOVE;
 
 char cLedCounter = 0;
 
@@ -16,31 +16,29 @@ void delay_ms(int iTime){
 
 int main(){
 	LedInit();
+	KeyboardInit();
 	
 	while(1){
-		switch (eLedDirection){
+		switch (eCurrentState){
 		
-			case LEFT:
-			LedStepLeft();
-			cLedCounter++;
-			if (cLedCounter > 2){
-				eLedDirection = RIGHT;
-				cLedCounter = 0;
-			}
-			else {
-				eLedDirection = LEFT;
-			}
-			break;
-			
-			case RIGHT:
+			case MOVE:
 			LedStepRight();
 			cLedCounter++;
 			if (cLedCounter > 2){
-				eLedDirection = LEFT;
+				eCurrentState = STAY;
 				cLedCounter = 0;
 			}
 			else {
-				eLedDirection = RIGHT;
+				eCurrentState = MOVE;
+			}
+			break;
+			
+			case STAY:
+			if (eKeyboardRead() == BUTTON_0){
+				eCurrentState = MOVE;
+			}
+			else {
+				eCurrentState = STAY;
 			}
 			break;
 		
