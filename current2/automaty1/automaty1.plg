@@ -1,0 +1,18 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\sem 2\ppsw\current2\automaty1\automaty1.uvproj
+Project File Date:  05/02/2022
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling Startup.s...
+compiling keyboard.c...
+compiling led.c...
+compiling main.c...
+main.c(25): warning:  #111-D: statement is unreachable
+linking...
+Program Size: Code=892 RO-data=32 RW-data=8 ZI-data=1256  
+".\automaty1.axf" - 0 Errors, 1 Warning(s).
