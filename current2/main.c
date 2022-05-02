@@ -53,7 +53,7 @@ int main(){
 			break;
 		
 		}
-		delay_ms(500);
+		delay_ms(100);
 	}
 	return 0;
 }
