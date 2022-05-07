@@ -1,9 +1,10 @@
 #include "led.h"
 #include "keyboard.h"
 
-enum CurrentState {LEFT, RIGHT, STAY};
+enum CurrentState {LEFT, RIGHT, STAY, RIGHT_TO_LEFT};
 enum CurrentState eCurrentState = STAY;
 
+unsigned char ucBlinkCounter;
 
 void delay_ms(int iTime){
 	int iCount;
@@ -25,7 +26,7 @@ int main(){
 			if (eKeyboardRead() == BUTTON_1){
 				eCurrentState = STAY;
 			}
-			else {
+			else{
 				eCurrentState = LEFT;
 			}
 			break;
@@ -34,6 +35,9 @@ int main(){
 			LedStepRight();
 			if (eKeyboardRead() == BUTTON_1){
 				eCurrentState = STAY;
+			}
+			else if (eKeyboardRead() == BUTTON_3){
+					eCurrentState = RIGHT_TO_LEFT;
 			}
 			else {
 				eCurrentState = RIGHT;
@@ -51,6 +55,23 @@ int main(){
 				eCurrentState = STAY;
 			}
 			break;
+			
+			case RIGHT_TO_LEFT:
+				if (ucBlinkCounter > 4){
+					ucBlinkCounter = 0;
+					eCurrentState = LEFT;
+				}
+				else{
+					if (ucBlinkCounter % 2 == 0){
+						LedStepLeft();
+					}
+					else	{
+						LedStepRight();
+					}
+					ucBlinkCounter++;
+				}
+				break;
+				
 		
 		}
 		delay_ms(500);
