@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\sem_2\ppsw\current4\interrupt3\interrupt3.uvproj
+Project File Date:  05/08/2022
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(14): warning:  #1-D: last line of file ends without a newline
+linking...
+Program Size: Code=980 RO-data=32 RW-data=8 ZI-data=1256  
+".\interrupt3.axf" - 0 Errors, 1 Warning(s).
